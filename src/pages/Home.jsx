@@ -1,28 +1,29 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const Home = () => {
+function Home() {
     const navigate = useNavigate();
-    const [player, setPlayer] = useState(null);
+
+    const [user_name, setUserName] = useState('');
 
     useEffect(() => {
-        const playerData = JSON.parse(localStorage.getItem('player'));
-        if (playerData) {
-            setPlayer(playerData);
+        const user_name = localStorage.getItem('user_name');
+        
+        if (user_name) {
+            setUserName(user_name);
         } else {
-            navigate('/login'); // Redirect if not logged in
+            navigate('/login');
         }
-    }, [navigate]);
+    }, []
+    );
 
-    if (!player) {
+    if (!user_name) {
         return <div>Loading...</div>;
     }
 
-    // ✅ Use player avatar if available, else show default avatar
-    const avatarSrc =
-        player.avatar && player.avatar.trim() !== ""
-            ? player.avatar
-            : "/Images/Avatars/default_avatar.png"; // 👈 place your default image here
+    const avatarSrc = user_name.avatar && user_name.avatar.trim() !== ""
+            ? user_name.avatar
+            : "/Images/Avatars/default_avatar.png"; // default avatar here
 
     return (
         <div
@@ -50,10 +51,9 @@ const Home = () => {
             >
                 Welcome to Banana Game
                 <br />
-                <span style={{ color: 'darkorange' }}>{player.name}!</span>
+                <span style={{ color: 'darkorange' }}>{user_name}</span>
             </h1>
 
-            {/* Player Avatar */}
             <img
                 src={avatarSrc}
                 alt="Player Avatar"
@@ -67,7 +67,6 @@ const Home = () => {
                     boxShadow: '0 0 10px rgba(0,0,0,0.4)',
                 }}
                 onError={(e) => {
-                    // 👇 if the image fails to load (broken link)
                     e.target.src = '/Images/Background/av1.jpg';
                 }}
             />

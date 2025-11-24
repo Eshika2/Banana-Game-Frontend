@@ -32,7 +32,7 @@ function Login() {
                     // console.log(response.data.output.token);
 
                     const user_name = response.data.output.user_name || email.split("@")[0];
-                    localStorage.setItem("username", user_name);
+                    localStorage.setItem("user_name", user_name);
 
                     navigate("/home");
                 }
