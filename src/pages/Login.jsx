@@ -2,49 +2,70 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 
+import toast from "react-hot-toast";
+
 function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
+
     const navigate = useNavigate();
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        setError(""); // clear old errors
+    async function handleSubmit() {
+        const emailError = validateEmail(email);
+        if (emailError) {
+            toast.error(emailError);
+            return;
+        }
 
-        try {
-            const res = await axios.post("http://localhost:3000/api/user/auth/login", {
-                email,
-                password,
-            });
+        try { 
+            await axios.post(import.meta.env.VITE_BACKEND_URL +  "/api/user/auth/login", {
+                email : email,
+                password : password
+            })
+            .then(
+                (response)=>{
+                    // console.log("Login Successfull", response.data);
 
-            console.log(res.data);
+                    toast.success(response.data.message || "Login Successfull");
 
-            if (res.data.success) {
-                const token = res.data.output.token;
-                const username = res.data.output.user_name || email.split("@")[0];
+                    localStorage.setItem("token", response.data.output.token);
+                    // console.log(response.data.output.token);
 
-                // save data locally
-                localStorage.setItem("token", token);
-                localStorage.setItem("player", JSON.stringify({ name: username }));
+                    const user_name = response.data.output.user_name || email.split("@")[0];
+                    localStorage.setItem("user_name", user_name);
 
-                alert("Login successful!");
-                navigate("/home");
-            } else {
-                // backend returned success: false
-                setError(res.data.message || "Invalid credentials");
-            }
+                    const defaultAvatar = "/Images/Avatars/default_avatar.png";
+                    const storedAvatar = localStorage.getItem("avatar") || defaultAvatar;
+                    localStorage.setItem("avatar", storedAvatar);
+
+                    navigate("/home");
+                }
+            )
+            .catch(
+                (error)=>{
+                    console.log("Login Failed", error);
+                    toast.error(error.response.data.message || "Login Failed");
+                }
+            );
         } catch (err) {
             console.error(err);
-
-            // show backend messages (like invalid password, user not found)
             if (err.response?.data?.message) {
-                setError(err.response.data.message);
+                toast.error(err.response.data.message);
             } else {
-                setError("Something went wrong. Please try again.");
+                toast.error("Something went wrong. Please try again.");
             }
         }
     };
+
+    function validateEmail(email) {
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+
+        if (!emailRegex.test(email)) {
+            return "Please enter a valid email address";
+        }
+
+        return null;
+    }
 
     return (
         <div
@@ -58,42 +79,36 @@ function Login() {
             <div className="bg-white p-3 rounded w-25 shadow">
                 <h2 className="text-center mb-3">Login</h2>
 
-                {error && (
-                    <div className="alert alert-danger text-center py-2">{error}</div>
-                )}
-
-                <form onSubmit={handleSubmit}>
-                    <div className="mb-3">
-                        <label htmlFor="email">
-                            <strong>Email</strong>
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Enter Email"
-                            autoComplete="off"
-                            name="email"
-                            className="form-control rounded-0"
-                            onChange={(e) => setEmail(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <div className="mb-3">
-                        <label htmlFor="password">
-                            <strong>Password</strong>
-                        </label>
-                        <input
-                            type="password"
-                            placeholder="Enter Password"
-                            name="password"
-                            className="form-control rounded-0"
-                            onChange={(e) => setPassword(e.target.value)}
-                            required
-                        />
-                    </div>
-                    <button type="submit" className="btn btn-success w-100 rounded-0">
-                        Login
-                    </button>
-                </form>
+                <div className="mb-3">
+                    <label htmlFor="email">
+                        <strong>Email</strong>
+                    </label>
+                    <input
+                        type="text"
+                        placeholder="Enter Email"
+                        autoComplete="off"
+                        name="email"
+                        className="form-control rounded-0"
+                        onChange={(e) => setEmail(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="mb-3">
+                    <label htmlFor="password">
+                        <strong>Password</strong>
+                    </label>
+                    <input
+                        type="password"
+                        placeholder="Enter Password"
+                        name="password"
+                        className="form-control rounded-0"
+                        onChange={(e) => setPassword(e.target.value)}
+                        required
+                    />
+                </div>
+                <button type="submit" className="btn btn-success w-100 rounded-0" onClick={handleSubmit}>
+                    Login
+                </button>
 
                 <p className="mt-3 text-center">Don't have an account?</p>
                 <Link
