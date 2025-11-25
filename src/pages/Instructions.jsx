@@ -81,15 +81,16 @@ export default function Instructions() {
 
       <button
         style={{
-          marginTop: "25px",
-          padding: "10px 25px",
-          fontSize: "1.1rem",
+          position: "absolute",
+          top: "20px",
+          right: "20px",
+          padding: "10px 20px",
           background: "yellow",
           color: "black",
-          borderRadius: "10px",
+          border: "none",
+          borderRadius: "5px",
           cursor: "pointer",
           fontWeight: "bold",
-          border: "none",
         }}
         onClick={() => window.history.back()}
       >

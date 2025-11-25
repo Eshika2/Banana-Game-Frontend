@@ -1,28 +1,25 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 export default function Rank() {
+    const navigate = useNavigate();
     const [users, setUsers] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
     const [totalPages, setTotalPages] = useState(1);
     const [myData, setMyData] = useState(null);
 
-    const limit = 5; // 10 users per page
-
-    // console.log(localStorage.getItem("token"));
+    const limit = 5;
 
     const fetchLeaderboard = async (page) => {
         try {
             const res = await axios.get(
                 import.meta.env.VITE_BACKEND_URL + "/api/user/leaderboard",
                 {
-                    params : { page, limit },
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`,
-                    }
+                    params: { page, limit },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
                 }
             );
-
             setUsers(res.data.output.users);
             setCurrentPage(res.data.output.currentPage);
             setTotalPages(res.data.output.totalPages);
@@ -35,19 +32,13 @@ export default function Rank() {
         try {
             const res = await axios.get(
                 import.meta.env.VITE_BACKEND_URL + "/api/user/leaderboard",
-                { 
-                    params: { page: 1, limit: 1000000 }, // get ALL users to find myself
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem("token")}`
-                    }
-                }
+                { params: { page: 1, limit: 1000000 }, headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
             );
 
             const list = res.data.output.users;
             const myName = localStorage.getItem("user_name");
             const mine = list.find((u) => u.user_name === myName);
-
-            setMyData(mine);
+            if (mine) setMyData(mine);
         } catch (err) {
             console.log(err);
         }
@@ -59,35 +50,28 @@ export default function Rank() {
     }, []);
 
     const nextPage = () => {
-        // console.log(currentPage, totalPages);
-        if (currentPage < totalPages) {
-            fetchLeaderboard(currentPage + 1);
-        }
+        if (currentPage < totalPages) fetchLeaderboard(currentPage + 1);
     };
 
     const prevPage = () => {
-        if (currentPage > 1) {
-            fetchLeaderboard(currentPage - 1);
-        }
+        if (currentPage > 1) fetchLeaderboard(currentPage - 1);
     };
 
     return (
         <div style={styles.container}>
+            {/* Back Button */}
+            <button onClick={() => navigate(-1)} style={styles.backButton}>
+                ◀ Back
+            </button>
+
             <h1 style={styles.title}>🏆 Leaderboard</h1>
 
             <div style={styles.listContainer}>
                 {users.map((u, index) => (
                     <div key={index} style={styles.row}>
                         <span style={styles.rank}>#{u.rank}</span>
-
-                        <img
-                            src={u.profile_img || "/Images/default_profile.png"}
-                            style={styles.avatar}
-                        />
-
                         <span style={styles.name}>{u.user_name}</span>
-
-                        <span style={styles.score}>⭐ {u.score}</span>
+                        <span style={styles.score}>{u.score}</span>
                     </div>
                 ))}
             </div>
@@ -101,11 +85,9 @@ export default function Rank() {
                 >
                     ◀ Prev
                 </button>
-
                 <span style={styles.pageText}>
                     Page {currentPage} / {totalPages}
                 </span>
-
                 <button
                     onClick={nextPage}
                     disabled={currentPage === totalPages}
@@ -115,22 +97,14 @@ export default function Rank() {
                 </button>
             </div>
 
-            {/* My Rank Section */}
+            {/* My Rank Section at bottom */}
             {myData && (
                 <div style={styles.mySection}>
-                    <h2 style={{ marginBottom: "10px" }}>📌 My Rank</h2>
-
+                    <h2 style={{ marginBottom: "20px" }}>📌 My Rank</h2>
                     <div style={styles.myRow}>
                         <span style={styles.rank}>#{myData.rank}</span>
-
-                        <img
-                            src={myData.profile_img || "/Images/default_profile.png"}
-                            style={styles.avatar}
-                        />
-
                         <span style={styles.name}>{myData.user_name}</span>
-
-                        <span style={styles.score}>⭐ {myData.score}</span>
+                        <span style={styles.score}>{myData.score}</span>
                     </div>
                 </div>
             )}
@@ -147,6 +121,22 @@ const styles = {
         backgroundPosition: "center",
         color: "white",
         textShadow: "2px 2px 4px black",
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "flex-start",
+        position: "relative",
+    },
+    backButton: {
+        position: "absolute",
+        top: "20px",
+        right: "20px",
+        padding: "10px 20px",
+        background: "yellow",
+        color: "black",
+        border: "none",
+        borderRadius: "5px",
+        cursor: "pointer",
+        fontWeight: "bold",
     },
     title: {
         textAlign: "center",
@@ -158,6 +148,7 @@ const styles = {
     listContainer: {
         width: "80%",
         margin: "auto",
+        flex: 1,
     },
     row: {
         display: "flex",
@@ -179,26 +170,12 @@ const styles = {
         boxShadow: "0 0 15px black",
         fontWeight: "bold",
     },
-    rank: {
-        fontSize: "1.5rem",
-        width: "70px",
-    },
-    avatar: {
-        width: "60px",
-        height: "60px",
-        borderRadius: "50%",
-        border: "2px solid white",
-    },
-    name: {
-        flex: 1,
-        marginLeft: "20px",
-        fontSize: "1.3rem",
-    },
-    score: {
-        fontSize: "1.3rem",
-    },
+    rank: { fontSize: "1.5rem", width: "70px" },
+    name: { flex: 1, fontSize: "1.3rem" },
+    score: { fontSize: "1.3rem" },
     pagination: {
         marginTop: "20px",
+        marginBottom: "30px",
         display: "flex",
         justifyContent: "center",
         alignItems: "center",
@@ -214,11 +191,12 @@ const styles = {
         border: "none",
         fontWeight: "bold",
     },
-    pageText: {
-        fontSize: "1.2rem",
-    },
+    pageText: { fontSize: "1.2rem" },
     mySection: {
-        marginTop: "40px",
+        marginTop: "auto",
         textAlign: "center",
+        width: "80%",
+        marginLeft: "auto",
+        marginRight: "auto",
     },
 };

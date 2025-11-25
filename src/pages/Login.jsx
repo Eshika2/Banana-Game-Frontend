@@ -34,6 +34,10 @@ function Login() {
                     const user_name = response.data.output.user_name || email.split("@")[0];
                     localStorage.setItem("user_name", user_name);
 
+                    const defaultAvatar = "/Images/Avatars/default_avatar.png";
+                    const storedAvatar = localStorage.getItem("avatar") || defaultAvatar;
+                    localStorage.setItem("avatar", storedAvatar);
+
                     navigate("/home");
                 }
             )

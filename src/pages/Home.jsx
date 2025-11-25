@@ -1,12 +1,21 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-function Home() {
+export default function Home() {
+    const [user_name, setUserName] = useState("");
+    const [avatar, setAvatar] = useState("");
+
     const navigate = useNavigate();
 
-    const [user_name, setUserName] = useState('');
-
     useEffect(() => {
+
+        const defaultAvatar = "/Images/Avatars/default_avatar.png";
+        if (!localStorage.getItem("avatar")) {
+            localStorage.setItem("avatar", defaultAvatar);
+        }
+        const avatar = localStorage.getItem("avatar");
+        setAvatar(avatar);
+
         const user_name = localStorage.getItem('user_name');
         
         if (user_name) {
@@ -20,10 +29,6 @@ function Home() {
     if (!user_name) {
         return <div>Loading...</div>;
     }
-
-    const avatarSrc = user_name.avatar && user_name.avatar.trim() !== ""
-            ? user_name.avatar
-            : "/Images/Avatars/default_avatar.png"; // default avatar here
 
     return (
         <div
@@ -55,7 +60,7 @@ function Home() {
             </h1>
 
             <img
-                src={avatarSrc}
+                src={avatar}
                 alt="Player Avatar"
                 style={{
                     width: '100px',
@@ -65,9 +70,6 @@ function Home() {
                     border: '3px solid white',
                     objectFit: 'cover',
                     boxShadow: '0 0 10px rgba(0,0,0,0.4)',
-                }}
-                onError={(e) => {
-                    e.target.src = '/Images/Background/av1.jpg';
                 }}
             />
 
@@ -127,5 +129,3 @@ const buttonStyle = {
     textAlign: 'center',
     transition: 'transform 0.2s ease-in-out',
 };
-
-export default Home;
