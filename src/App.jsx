@@ -7,6 +7,7 @@ import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Instructions from './pages/instructions'
 import Game from './pages/Game'
+import Rank from './pages/Rank'
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           <Route path="/home" element={<Home />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/game" element={<Game />} />
+          <Route path="/rank" element={<Rank />} />
         </Routes>
     </BrowserRouter>
   )
