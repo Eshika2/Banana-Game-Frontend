@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
@@ -11,11 +11,11 @@ export default function Game() {
     const [answer, setAnswer] = useState("");
     const [message, setMessage] = useState("");
     const [timer, setTimer] = useState(30);
-    const [intervalId, setIntervalId] = useState(null);
     const [isTimeUp, setIsTimeUp] = useState(false);
     const [canAnswer, setCanAnswer] = useState(true);
 
-    // On component mount
+    const timerRef = useRef(null);
+
     useEffect(() => {
         const storedName = localStorage.getItem("user_name");
         if (!storedName) {
@@ -26,7 +26,6 @@ export default function Game() {
         startNewGame();
     }, []);
 
-    // Timer effect
     useEffect(() => {
         if (timer <= 0 && canAnswer) {
             handleTimeUp();
@@ -34,16 +33,14 @@ export default function Game() {
     }, [timer]);
 
     const startTimer = () => {
-        if (intervalId) clearInterval(intervalId);
-
-        const id = setInterval(() => {
+        clearInterval(timerRef.current);
+        timerRef.current = setInterval(() => {
             setTimer(prev => (prev > 0 ? prev - 1 : 0));
         }, 1000);
-
-        setIntervalId(id);
     };
 
     const startNewGame = async () => {
+        clearInterval(timerRef.current);
         try {
             setMessage("");
             setAnswer("");
@@ -51,9 +48,7 @@ export default function Game() {
             setIsTimeUp(false);
             setCanAnswer(true);
 
-            if (intervalId) clearInterval(intervalId);
-
-            const res = await axios.get("https://marcconrad.com/uob/banana/api.php");
+            const res = await axios.get(import.meta.env.VITE_BANANA_API_URL);
 
             setBananaImg(res.data.question);
             setCorrectAnswer(res.data.solution);
@@ -62,7 +57,6 @@ export default function Game() {
 
             startTimer();
         } catch (err) {
-            console.log(err);
             setMessage("❌ Error loading puzzle.");
         }
     };
@@ -79,13 +73,11 @@ export default function Game() {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-        } catch (err) {
-            console.log("Score update error:", err);
-        }
+        } catch (err) {}
     };
 
     const handleTimeUp = async () => {
-        clearInterval(intervalId);
+        clearInterval(timerRef.current);
         setIsTimeUp(true);
         setCanAnswer(false);
         setMessage("⏳ Time's up! -5 points");
@@ -99,25 +91,22 @@ export default function Game() {
 
     const checkAnswer = async () => {
         if (!canAnswer) return;
-
         if (!answer.trim()) {
             setMessage("⚠ Enter an answer");
             return;
         }
 
-        clearInterval(intervalId);
+        clearInterval(timerRef.current);
         setCanAnswer(false);
 
         if (parseInt(answer) === parseInt(correctAnswer)) {
             setMessage("✅ Correct! +20 points");
             await updateScore(true);
-
         } else {
             setMessage(`❌ Wrong! Correct: ${correctAnswer} \n-5 points`);
             await updateScore(false);
         }
 
-        // Auto start next game after 3 seconds
         setTimeout(() => {
             startNewGame();
         }, 3000);
@@ -126,16 +115,15 @@ export default function Game() {
     const quitGame = async () => {
         if (!canAnswer) return;
 
-        clearInterval(intervalId);
+        clearInterval(timerRef.current);
         setCanAnswer(false);
         setIsTimeUp(true);
-
         setMessage("🚪 Game quit! -5 points");
 
         await updateScore(false);
 
         setTimeout(() => {
-            navigate("/home")
+            navigate("/home");
         }, 3000);
     };
 
@@ -197,7 +185,7 @@ const styles = {
         color: "orange",
     },
     image: {
-        width: "600px",
+        width: "700px",
         height: "400px",
         marginTop: "20px",
         borderRadius: "10px",

@@ -1,11 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import toast from 'react-hot-toast';
 
 export default function Settings() {
     const navigate = useNavigate();
     const [selectedAvatar, setSelectedAvatar] = useState('');
-    const [showPopup, setShowPopup] = useState(false);
 
     // Avatar options
     const avatars = [
@@ -23,8 +23,8 @@ export default function Settings() {
 
     const handleSaveAvatar = () => {
         localStorage.setItem('avatar', selectedAvatar);
-        setShowPopup(true);
-        setTimeout(() => setShowPopup(false), 2000);
+
+        toast.success('Avatar saved successfully!');
     };
 
     const handleLogout = async () => {
@@ -37,23 +37,28 @@ export default function Settings() {
 
             // console.log(localStorage.getItem('token'));
 
+            toast.success('Logout successful!');
+
             navigate('/login');
         } catch (err) {
             console.log('Logout error:', err);
+            toast.error('Logout failed.');
         }
     };
 
     return (
         <div
             style={{
-                minHeight: '100vh',
-                backgroundImage: "url('/Images/Background/banantreesunlight.jpg')",
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                color: 'white',
-                padding: '20px',
-                fontFamily: 'Arial, sans-serif',
-                textAlign: 'center',
+                height: "100vh",
+                backgroundImage: 'url(/Images/Background/back3.jpg)',
+                backgroundSize: "cover",
+                backgroundPosition: "center",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                paddingTop: "40px",
+                color: "white",
+                textShadow: "2px 2px 4px black",
             }}
         >
             {/* Back button */}
@@ -91,6 +96,7 @@ export default function Settings() {
                             height: '100px',
                             margin: '10px',
                             borderRadius: '50%',
+                            objectFit: 'cover',
                             cursor: 'pointer',
                             border: avatar === selectedAvatar ? '4px solid #00FF00' : '4px solid transparent',
                             boxShadow: avatar === selectedAvatar ? '0 0 15px #00FF00' : '0 0 8px #ccc',
@@ -138,26 +144,6 @@ export default function Settings() {
                     Logout
                 </button>
             </div>
-
-            {/* Success popup */}
-            {showPopup && (
-                <div
-                    style={{
-                        position: 'fixed',
-                        top: '50%',
-                        left: '50%',
-                        transform: 'translate(-50%, -50%)',
-                        background: '#fff',
-                        padding: '20px',
-                        borderRadius: '10px',
-                        boxShadow: '0 4px 6px rgba(0,0,0,0.2)',
-                        color: '#333',
-                        zIndex: 1000,
-                    }}
-                >
-                    Avatar updated successfully!
-                </div>
-            )}
         </div>
     );
 }

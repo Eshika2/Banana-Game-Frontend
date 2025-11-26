@@ -1,6 +1,9 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Instructions() {
+  const navigate = useNavigate();
+
   return (
     <div
       style={{
@@ -92,9 +95,9 @@ export default function Instructions() {
           cursor: "pointer",
           fontWeight: "bold",
         }}
-        onClick={() => window.history.back()}
+        onClick={() => navigate(-1)}
       >
-        ⬅ Back
+        ◀ Back
       </button>
     </div>
   );
