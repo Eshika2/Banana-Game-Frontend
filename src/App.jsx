@@ -1,5 +1,4 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import 'bootstrap/dist/css/bootstrap.min.css'
 import { Toaster } from 'react-hot-toast'
 
 import Home from './pages/Home'
@@ -28,7 +27,7 @@ function App() {
           <Route path="/settings" element={<Settings />} />
 
           <Route path="/*" element={
-            <h1 className="d-flex flex-column justify-content-center align-items-center vh-100 text-center text-danger">
+            <h1 className="text-3xl font-bold text-red-500 flex justify-center items-center h-screen">
               404 Page Not Found
             </h1>} 
           />
