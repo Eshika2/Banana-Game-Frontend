@@ -5,7 +5,7 @@ import { Toaster } from 'react-hot-toast'
 import Home from './pages/Home'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
-import Instructions from './pages/instructions'
+import Instructions from './pages/Instructions'
 import Game from './pages/Game'
 import Rank from './pages/Rank'
 import Profile from './pages/Profile'
@@ -26,6 +26,12 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/instructions" element={<Instructions />} />
           <Route path="/settings" element={<Settings />} />
+
+          <Route path="/*" element={
+            <h1 className="d-flex flex-column justify-content-center align-items-center vh-100 text-center text-danger">
+              404 Page Not Found
+            </h1>} 
+          />
         </Routes>
     </BrowserRouter>
   )
