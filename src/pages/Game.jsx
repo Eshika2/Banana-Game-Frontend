@@ -57,7 +57,7 @@ export default function Game() {
 
             startTimer();
         } catch (err) {
-            setMessage("❌ Error loading puzzle.");
+            setMessage("Error loading puzzle.");
         }
     };
 
@@ -73,14 +73,16 @@ export default function Game() {
                     Authorization: `Bearer ${localStorage.getItem("token")}`
                 }
             });
-        } catch (err) {}
+        } catch (err) {
+            console.log("Error updating score:", err);
+        }
     };
 
     const handleTimeUp = async () => {
         clearInterval(timerRef.current);
         setIsTimeUp(true);
         setCanAnswer(false);
-        setMessage("⏳ Time's up! -5 points");
+        setMessage("⏳ Time's up! -5 points ⏳");
 
         await updateScore(false);
 
@@ -92,7 +94,7 @@ export default function Game() {
     const checkAnswer = async () => {
         if (!canAnswer) return;
         if (!answer.trim()) {
-            setMessage("⚠ Enter an answer");
+            setMessage("⚠️ Enter an answer ⚠️");
             return;
         }
 
@@ -100,10 +102,10 @@ export default function Game() {
         setCanAnswer(false);
 
         if (parseInt(answer) === parseInt(correctAnswer)) {
-            setMessage("✅ Correct! +20 points");
+            setMessage("✅ Correct ✅  \n +20 points");
             await updateScore(true);
         } else {
-            setMessage(`❌ Wrong! Correct: ${correctAnswer} \n-5 points`);
+            setMessage(`❌ Wrong! ❌ \n Correct Answer: ${correctAnswer} \n -5 points`);
             await updateScore(false);
         }
 
@@ -118,7 +120,7 @@ export default function Game() {
         clearInterval(timerRef.current);
         setCanAnswer(false);
         setIsTimeUp(true);
-        setMessage("🚪 Game quit! -5 points");
+        setMessage("👋 Game quit 👋 \n -5 points");
 
         await updateScore(false);
 
@@ -128,99 +130,85 @@ export default function Game() {
     };
 
     return (
-        <div style={styles.container}>
-            <h1 style={styles.title}>🍌 Banana Game</h1>
-            <h2 style={{ color: "yellow" }}>Player: {userName}</h2>
-            <h3 style={{ color: timer <= 5 ? "red" : "white" }}>⏳ Time Left: {timer}s</h3>
+        <div
+            className="
+                w-full h-screen flex flex-col items-center pt-10 
+                bg-cover bg-center text-white relative
+            "
+            style={{ backgroundImage: "url('/Images/Background/back4.jpg')" }}
+        >
+            {/* Overlay */}
+            <div className="absolute inset-0 bg-black/40"></div>
 
-            {bananaImg && (
-                <img
-                    src={bananaImg}
-                    alt="Puzzle"
-                    style={styles.image}
+            <div className="relative z-10 text-center">
+                <h1 className="text-7xl font-extrabold text-yellow-400 drop-shadow-lg">
+                    Banana Game
+                </h1>
+                <h2 className="text-4xl mt-2">Player: <span className="text-yellow-300">{userName}</span></h2>
+
+                <h3
+                    className={`
+                        text-xl mt-4 font-bold 
+                        ${timer <= 5 ? "text-red-600 animate-pulse" : "text-white"}
+                    `}
+                >
+                    ⏳ Time Left: {timer}s ⏳
+                </h3>
+
+                {bananaImg && (
+                    <img
+                        src={bananaImg}
+                        alt="Puzzle"
+                        className="
+                            w-[700px] h-[400px] mt-5 rounded-lg shadow-xl 
+                            border border-white/30 bg-black/20
+                        "
+                    />
+                )}
+
+                <input
+                    type="number"
+                    placeholder="Enter your answer"
+                    value={answer}
+                    onChange={(e) => setAnswer(e.target.value)}
+                    disabled={!canAnswer}
+                    className="
+                        mt-6 p-3 w-64 text-white text-xl rounded-md text-center
+                        outline-none border-2 border-yellow-400 focus:border-yellow-300
+                        disabled:bg-gray-400 disabled:cursor-not-allowed
+                    "
                 />
-            )}
 
-            <input
-                type="number"
-                placeholder="Enter your answer"
-                value={answer}
-                onChange={(e) => setAnswer(e.target.value)}
-                style={styles.input}
-                disabled={!canAnswer}
-            />
+                <div className="flex gap-4 mt-5 justify-center">
+                    <button
+                        onClick={checkAnswer}
+                        disabled={!canAnswer}
+                        className="
+                            bg-green-600 hover:bg-green-700 active:scale-95 
+                            px-6 py-2 rounded-lg text-lg font-semibold shadow-md
+                            disabled:bg-gray-500 disabled:cursor-not-allowed
+                        "
+                    >
+                        Submit
+                    </button>
 
-            <div style={{ display: "flex", gap: "10px" }}>
-                <button style={styles.btn} onClick={checkAnswer} disabled={!canAnswer}>
-                    Submit
-                </button>
-                <button style={styles.btn2} onClick={quitGame} disabled={!canAnswer}>
-                    Quit
-                </button>
+                    <button
+                        onClick={quitGame}
+                        disabled={!canAnswer}
+                        className="
+                            bg-red-600 hover:bg-red-700 active:scale-95 
+                            px-6 py-2 rounded-lg text-lg font-semibold shadow-md
+                            disabled:bg-gray-500 disabled:cursor-not-allowed
+                        "
+                    >
+                        Quit
+                    </button>
+                </div>
+
+                <h3 className="mt-6 text-2xl whitespace-pre-line text-yellow-300 font-bold drop-shadow-lg">
+                    {message}
+                </h3>
             </div>
-
-            <h3 style={{ color: "white", textAlign: "center", whiteSpace: "pre-line" }}>
-                {message}
-            </h3>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        height: "100vh",
-        backgroundImage: 'url(/Images/Background/back3.jpg)',
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        paddingTop: "40px",
-        color: "white",
-        textShadow: "2px 2px 4px black",
-    },
-    title: {
-        fontSize: "3rem",
-        fontWeight: "bold",
-        color: "orange",
-    },
-    image: {
-        width: "700px",
-        height: "400px",
-        marginTop: "20px",
-        borderRadius: "10px",
-        boxShadow: "0px 0px 20px rgba(0,0,0,0.7)",
-    },
-    input: {
-        padding: "10px",
-        fontSize: "20px",
-        marginTop: "20px",
-        width: "250px",
-        borderRadius: "5px",
-        border: "none",
-        outline: "none",
-        textAlign: "center",
-    },
-    btn: {
-        marginTop: "15px",
-        padding: "12px 25px",
-        fontSize: "18px",
-        backgroundColor: "green",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        fontWeight: "bold",
-    },
-    btn2: {
-        marginTop: "15px",
-        padding: "12px 25px",
-        fontSize: "18px",
-        backgroundColor: "red",
-        color: "white",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        fontWeight: "bold",
-    }
-};
