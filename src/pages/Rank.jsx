@@ -21,7 +21,6 @@ export default function Rank() {
                 }
             );
             setUsers(res.data.output.users);
-            setCurrentPage(res.data.output.currentPage);
             setTotalPages(res.data.output.totalPages);
         } catch (err) {
             console.log("Leaderboard Fetch Error:", err);
@@ -32,7 +31,10 @@ export default function Rank() {
         try {
             const res = await axios.get(
                 import.meta.env.VITE_BACKEND_URL + "/api/user/leaderboard",
-                { params: { page: 1, limit: 1000000 }, headers: { Authorization: `Bearer ${localStorage.getItem("token")}` } }
+                {
+                    params: { page: 1, limit: 1000000 },
+                    headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
+                }
             );
 
             const list = res.data.output.users;
@@ -46,157 +48,88 @@ export default function Rank() {
 
     useEffect(() => {
         fetchLeaderboard(currentPage);
+    }, [currentPage]);
+
+    useEffect(() => {
         fetchMyRank();
     }, []);
 
-    const nextPage = () => {
-        if (currentPage < totalPages) fetchLeaderboard(currentPage + 1);
-    };
-
-    const prevPage = () => {
-        if (currentPage > 1) fetchLeaderboard(currentPage - 1);
-    };
-
     return (
-        <div style={styles.container}>
-            {/* Back Button */}
-            <button onClick={() => navigate(-1)} style={styles.backButton}>
-                ◀ Back
-            </button>
+        <div
+            className="min-h-screen w-full bg-cover bg-center relative"
+            style={{ backgroundImage: "url('/Images/Background/back4.jpg')" }}
+        >
+            {/* Dark Overlay */}
+            <div className="absolute inset-0 bg-black/40"></div>
 
-            <h1 style={styles.title}>🏆 Leaderboard</h1>
+            {/* Content Wrapper */}
+            <div className="relative z-10 max-w-3xl mx-auto px-4 py-10">
 
-            <div style={styles.listContainer}>
-                {users.map((u, index) => (
-                    <div key={index} style={styles.row}>
-                        <span style={styles.rank}>#{u.rank}</span>
-                        <span style={styles.name}>{u.user_name}</span>
-                        <span style={styles.score}>{u.score}</span>
-                    </div>
-                ))}
-            </div>
-
-            {/* Pagination Buttons */}
-            <div style={styles.pagination}>
+                {/* Back Button */}
                 <button
-                    onClick={prevPage}
-                    disabled={currentPage === 1}
-                    style={{ ...styles.button, opacity: currentPage === 1 ? 0.5 : 1 }}
+                    onClick={() => navigate(-1)}
+                    className="fixed top-5 right-5 px-4 py-2 bg-yellow-400 text-black font-bold rounded shadow-lg hover:bg-yellow-300"
                 >
-                    ◀ Prev
+                    Back
                 </button>
-                <span style={styles.pageText}>
-                    Page {currentPage} / {totalPages}
-                </span>
-                <button
-                    onClick={nextPage}
-                    disabled={currentPage === totalPages}
-                    style={{ ...styles.button, opacity: currentPage === totalPages ? 0.5 : 1 }}
-                >
-                    Next ▶
-                </button>
-            </div>
 
-            {/* My Rank Section at bottom */}
-            {myData && (
-                <div style={styles.mySection}>
-                    <h2 style={{ marginBottom: "20px" }}>📌 My Rank</h2>
-                    <div style={styles.myRow}>
-                        <span style={styles.rank}>#{myData.rank}</span>
-                        <span style={styles.name}>{myData.user_name}</span>
-                        <span style={styles.score}>{myData.score}</span>
-                    </div>
+                {/* Title */}
+                <h1 className="text-center text-5xl font-extrabold mb-10 text-yellow-300 drop-shadow-xl">
+                    🏆 Leaderboard 🏆
+                </h1>
+
+                {/* Leaderboard List */}
+                <div className="space-y-4 min-h-[420px]">
+                    {users.map((u, index) => (
+                        <div
+                            key={index}
+                            className="flex justify-between items-center bg-black/60 px-6 py-4 rounded-xl shadow-lg text-white"
+                        >
+                            <span className="text-2xl w-20 font-bold">#{u.rank}</span>
+                            <span className="flex-1 text-xl">{u.user_name}</span>
+                            <span className="text-xl">{u.score}</span>
+                        </div>
+                    ))}
                 </div>
-            )}
+
+                {/* Pagination Buttons */}
+                <div className="flex justify-center items-center gap-6 mt-10">
+                    <button
+                        onClick={() => currentPage > 1 && setCurrentPage(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`px-4 py-2 rounded-lg font-bold bg-yellow-400 text-black shadow-md
+                        ${currentPage === 1 ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-300"}`}
+                    >
+                        ◀ Prev
+                    </button>
+
+                    <span className="text-xl font-semibold">
+                        Page {currentPage} / {totalPages}
+                    </span>
+
+                    <button
+                        onClick={() => currentPage < totalPages && setCurrentPage(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`px-4 py-2 rounded-lg font-bold bg-yellow-400 text-black shadow-md
+                        ${currentPage === totalPages ? "opacity-50 cursor-not-allowed" : "hover:bg-yellow-300"}`}
+                    >
+                        Next ▶
+                    </button>
+                </div>
+
+                {/* My Rank Section */}
+                {myData && (
+                    <div className="mt-12">
+                        <h2 className="text-3xl font-bold mb-4 text-center">My Rank</h2>
+
+                        <div className="flex justify-between items-center px-6 py-5 rounded-xl shadow-lg bg-yellow-300/60 font-bold text-black">
+                            <span className="text-2xl w-20 font-extrabold">#{myData.rank}</span>
+                            <span className="flex-1 text-xl">{myData.user_name}</span>
+                            <span className="text-xl">{myData.score}</span>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }
-
-const styles = {
-    container: {
-        padding: "20px",
-        backgroundImage: "url(/Images/Background/back3.jpg)",
-        minHeight: "100vh",
-        backgroundSize: "cover",
-        backgroundPosition: "center",
-        color: "white",
-        textShadow: "2px 2px 4px black",
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "flex-start",
-        position: "relative",
-    },
-    backButton: {
-        position: "absolute",
-        top: "20px",
-        right: "20px",
-        padding: "10px 20px",
-        background: "yellow",
-        color: "black",
-        border: "none",
-        borderRadius: "5px",
-        cursor: "pointer",
-        fontWeight: "bold",
-    },
-    title: {
-        textAlign: "center",
-        fontSize: "3rem",
-        fontWeight: "bold",
-        marginBottom: "20px",
-        color: "yellow",
-    },
-    listContainer: {
-        width: "80%",
-        margin: "auto",
-        flex: 1,
-    },
-    row: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        background: "rgba(0,0,0,0.5)",
-        padding: "12px 20px",
-        marginBottom: "10px",
-        borderRadius: "10px",
-        boxShadow: "0 0 10px black",
-    },
-    myRow: {
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        background: "rgba(255,215,0,0.3)",
-        padding: "15px 20px",
-        borderRadius: "10px",
-        boxShadow: "0 0 15px black",
-        fontWeight: "bold",
-    },
-    rank: { fontSize: "1.5rem", width: "70px" },
-    name: { flex: 1, fontSize: "1.3rem" },
-    score: { fontSize: "1.3rem" },
-    pagination: {
-        marginTop: "20px",
-        marginBottom: "30px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        gap: "20px",
-    },
-    button: {
-        padding: "10px 20px",
-        borderRadius: "8px",
-        background: "yellow",
-        color: "black",
-        fontSize: "1rem",
-        cursor: "pointer",
-        border: "none",
-        fontWeight: "bold",
-    },
-    pageText: { fontSize: "1.2rem" },
-    mySection: {
-        marginTop: "auto",
-        textAlign: "center",
-        width: "80%",
-        marginLeft: "auto",
-        marginRight: "auto",
-    },
-};
