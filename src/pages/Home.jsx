@@ -26,106 +26,71 @@ export default function Home() {
     }, []
     );
 
-    if (!user_name) {
-        return <div>Loading...</div>;
-    }
-
     return (
         <div
-            style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                height: '100vh',
-                backgroundImage: 'url(/Images/Background/back3.jpg)',
-                backgroundSize: 'cover',
-                backgroundPosition: 'center',
-                color: 'white',
-                textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)',
-            }}
+            className="
+                h-screen w-full 
+                flex flex-col items-center justify-center
+                bg-cover bg-center relative
+            "
+            style={{ backgroundImage: "url('/Images/Background/back4.jpg')" }}
         >
-            <h1
-                style={{
-                    color: 'black',
-                    fontSize: '3rem',
-                    fontWeight: 'bold',
-                    textAlign: 'center',
-                    lineHeight: '1.2',
-                }}
-            >
-                Welcome to Banana Game
-                <br />
-                <span style={{ color: 'darkorange' }}>{user_name}</span>
-            </h1>
 
-            <img
-                src={avatar}
-                alt="Player Avatar"
-                style={{
-                    width: '100px',
-                    height: '100px',
-                    borderRadius: '50%',
-                    marginBottom: '20px',
-                    border: '3px solid white',
-                    objectFit: 'cover',
-                    boxShadow: '0 0 10px rgba(0,0,0,0.4)',
-                }}
-            />
+            {/* Dark overlay */}
+            <div className="absolute inset-0 bg-black/40"></div>
 
-            {/* Background GIF */}
+            {/* Main Content */}
+            <div className="relative z-10 text-center text-white drop-shadow-lg flex flex-col items-center">
+                <h1 className="text-7xl font-extrabold">
+                    Welcome to Banana Game
+                    <br />
+                    <span className="text-yellow-400 text-5xl">{user_name}</span>
+                </h1>
+
+                {/* Avatar */}
+                <img
+                    src={avatar}
+                    alt="Player Avatar"
+                    className="
+                        w-28 h-28 rounded-full mt-6 
+                        border-4 border-white shadow-xl 
+                        object-cover
+                        
+                    "
+                />
+            </div>
+
+            {/* Animated GIF bottom-right */}
             <img
                 src="/Images/Background/gigimage3.gif"
-                alt="Background Animation 2"
-                style={{
-                    position: 'absolute',
-                    bottom: '1%',
-                    right: '8%',
-                    width: '350px',
-                    height: '200px',
-                    zIndex: 0,
-                    opacity: 0.8,
-                }}
+                alt="GIF"
+                className="absolute bottom-2 right-6 w-72 opacity-80 z-0"
             />
 
-            {/* Buttons */}
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '15px',
-                    width: '200px',
-                }}
-            >
-                <button style={buttonStyle} onClick={() => navigate('/game')}>
-                    Play
-                </button>
-                <button style={buttonStyle} onClick={() => navigate('/rank')}>
-                    Rank
-                </button>
-                <button style={buttonStyle} onClick={() => navigate('/profile')}>
-                    Profile
-                </button>
-                <button style={buttonStyle} onClick={() => navigate('/instructions')}>
-                    Instructions
-                </button>
-                <button style={buttonStyle} onClick={() => navigate('/settings')}>
-                    Settings
-                </button>
+            {/* Buttons Container */}
+            <div className="relative z-10 mt-10 w-56 flex flex-col gap-4">
+                <HomeButton label="Play" onClick={() => navigate('/game')} />
+                <HomeButton label="Rank" onClick={() => navigate('/rank')} />
+                <HomeButton label="Profile" onClick={() => navigate('/profile')} />
+                <HomeButton label="Instructions" onClick={() => navigate('/instructions')} />
+                <HomeButton label="Settings" onClick={() => navigate('/settings')} />
             </div>
         </div>
     );
 };
 
-const buttonStyle = {
-    padding: '10px 20px',
-    fontSize: '16px',
-    fontWeight: 'bold',
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    color: 'white',
-    border: 'none',
-    borderRadius: '5px',
-    cursor: 'pointer',
-    textAlign: 'center',
-    transition: 'transform 0.2s ease-in-out',
-};
+function HomeButton({ label, onClick }) {
+    return (
+        <button
+            onClick={onClick}
+            className="
+                bg-black/60 text-white font-semibold py-2 rounded-lg 
+                transition transform duration-200
+                hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
+                active:scale-95 shadow-md
+            "
+        >
+            {label}
+        </button>
+    );
+}
