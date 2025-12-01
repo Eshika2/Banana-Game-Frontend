@@ -112,6 +112,13 @@ export default function Login() {
                         Sign Up
                     </Link>
                 </p>
+
+                <p className="text-center text-white mt-4">
+                    Forget your password?{" "}
+                    <Link className="text-yellow-300 font-semibold hover:underline" to="/forget-password">
+                        Reset Password
+                    </Link>
+                </p>
             </div>
         </div>
     );

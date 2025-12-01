@@ -1,149 +1,91 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-import toast from 'react-hot-toast';
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import toast from "react-hot-toast";
 
 export default function Settings() {
-    const navigate = useNavigate();
-    const [selectedAvatar, setSelectedAvatar] = useState('');
+  const navigate = useNavigate();
+  const [selectedAvatar, setSelectedAvatar] = useState("");
 
-    // Avatar options
-    const avatars = [
-        '/Images/Avatars/avatar111.jpg',
-        '/Images/Avatars/av1.jpg',
-        '/Images/Avatars/av2.jpg',
-        '/Images/Avatars/av6.jpg',
-        '/Images/Avatars/av7.jpg',
-        '/Images/Avatars/avatar3.jpg',
-    ];
+  const avatars = [
+    "/Images/Avatars/av1.jpg",
+    "/Images/Avatars/av2.jpg",
+    "/Images/Avatars/av3.jpg",
+    "/Images/Avatars/av4.jpg",
+    "/Images/Avatars/av5.jpg",
+    "/Images/Avatars/av6.jpg",
+  ];
 
-    const handleAvatarSelect = (avatar) => {
-        setSelectedAvatar(avatar);
-    };
+  const handleAvatarSelect = (avatar) => setSelectedAvatar(avatar);
 
-    const handleSaveAvatar = () => {
-        localStorage.setItem('avatar', selectedAvatar);
+  const handleSaveAvatar = () => {
+    localStorage.setItem("avatar", selectedAvatar);
+    toast.success("Avatar saved successfully!");
+  };
 
-        toast.success('Avatar saved successfully!');
-    };
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user_name");
+    localStorage.removeItem("avatar");
 
-    const handleLogout = async () => {
-        try {
-            // console.log(localStorage.getItem('token'));
+    toast.success("Logout successful!");
+    navigate("/login");
+  };
 
-            localStorage.removeItem('token');
-            localStorage.removeItem('user_name');
-            localStorage.removeItem('avatar');
+  return (
+    <div
+      className="min-h-screen w-full bg-cover bg-center relative flex flex-col items-center pt-20 text-white"
+      style={{ backgroundImage: "url('/Images/Background/back4.jpg')" }}
+    >
+      {/* DARK OVERLAY */}
+      <div className="absolute inset-0 bg-black/40"></div>
 
-            // console.log(localStorage.getItem('token'));
+      {/* Back Button */}
+      <button
+        onClick={() => navigate(-1)}
+        className="absolute top-5 right-5 px-4 py-2 bg-yellow-400 text-black font-bold rounded shadow-lg hover:bg-yellow-300 z-50"
+      >
+        Back
+      </button>
 
-            toast.success('Logout successful!');
+      {/* Title */}
+      <h1 className="text-4xl font-extrabold text-orange-400 drop-shadow-lg mb-6 z-10">
+        Choose Your Avatar
+      </h1>
 
-            navigate('/login');
-        } catch (err) {
-            console.log('Logout error:', err);
-            toast.error('Logout failed.');
-        }
-    };
+      {/* Avatar Selection */}
+      <div className="flex flex-wrap justify-center gap-6 z-10 bg-black/40 backdrop-blur-md px-6 py-6 rounded-xl shadow-xl border border-white/10">
+        {avatars.map((avatar, idx) => (
+          <img
+            key={idx}
+            src={avatar}
+            onClick={() => handleAvatarSelect(avatar)}
+            className={`w-24 h-24 rounded-full object-cover cursor-pointer transition-all duration-300 shadow-xl hover:shadow-emerald-400
+              ${
+                selectedAvatar === avatar
+                  ? "ring-4 ring-green-400 scale-110 shadow-green-400"
+                  : "ring-4 ring-transparent hover:scale-105"
+              }
+            `}
+            alt="avatar"
+          />
+        ))}
+      </div>
 
-    return (
-        <div
-            style={{
-                height: "100vh",
-                backgroundImage: 'url(/Images/Background/back3.jpg)',
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                paddingTop: "40px",
-                color: "white",
-                textShadow: "2px 2px 4px black",
-            }}
-        >
-            {/* Back button */}
-            <button
-                style={{
-                    position: 'absolute',
-                    top: '20px',
-                    right: '20px',
-                    padding: '10px 20px',
-                    background: 'yellow',
-                    color: 'black',
-                    border: 'none',
-                    borderRadius: '5px',
-                    cursor: 'pointer',
-                }}
-                onClick={() => navigate(-1)}
-            >
-                ⬅ Back
-            </button>
+      {/* Save Avatar Button */}
+      <button
+        onClick={handleSaveAvatar}
+        className="mt-8 px-6 py-3 bg-green-500 hover:bg-green-600 text-white font-bold rounded-lg shadow-lg z-10"
+      >
+        Save Avatar
+      </button>
 
-            <h1 style={{ marginTop: '60px', fontSize: '2.5rem', color: 'orange' }}>
-                Choose Your Avatar
-            </h1>
-
-            {/* Avatar Selection */}
-            <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: '20px' }}>
-                {avatars.map((avatar, idx) => (
-                    <img
-                        key={idx}
-                        src={avatar}
-                        alt={`Avatar ${idx + 1}`}
-                        onClick={() => handleAvatarSelect(avatar)}
-                        style={{
-                            width: '100px',
-                            height: '100px',
-                            margin: '10px',
-                            borderRadius: '50%',
-                            objectFit: 'cover',
-                            cursor: 'pointer',
-                            border: avatar === selectedAvatar ? '4px solid #00FF00' : '4px solid transparent',
-                            boxShadow: avatar === selectedAvatar ? '0 0 15px #00FF00' : '0 0 8px #ccc',
-                            transition: 'transform 0.3s ease-in-out',
-                            transform: avatar === selectedAvatar ? 'scale(1.1)' : 'scale(1)',
-                        }}
-                    />
-                ))}
-            </div>
-
-            {/* Save Avatar Button */}
-            <div style={{ marginTop: '30px' }}>
-                <button
-                    onClick={handleSaveAvatar}
-                    style={{
-                        padding: '10px 20px',
-                        background: '#28a745',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '16px',
-                    }}
-                >
-                    Save Avatar
-                </button>
-            </div>
-
-            {/* Logout Button */}
-            <div style={{ marginTop: '40px' }}>
-                <button
-                    onClick={handleLogout}
-                    style={{
-                        padding: '10px 20px',
-                        background: 'red',
-                        color: '#fff',
-                        border: 'none',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-                        fontWeight: 'bold',
-                        fontSize: '16px',
-                    }}
-                >
-                    Logout
-                </button>
-            </div>
-        </div>
-    );
+      {/* Logout Button - placed FURTHER DOWN */}
+      <button
+        onClick={handleLogout}
+        className="fixed bottom-[50px] mt-20 px-6 py-3 bg-red-500 hover:bg-red-600 text-white font-bold rounded-lg shadow-lg z-10"
+      >
+        Logout
+      </button>
+    </div>
+  );
 }

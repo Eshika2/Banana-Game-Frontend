@@ -49,7 +49,7 @@ export default function Home() {
 
                 {/* Avatar */}
                 <img
-                    src={avatar}
+                    src={avatar || "/Images/Avatars/default.jpg"}
                     alt="Player Avatar"
                     className="
                         w-28 h-28 rounded-full mt-6 
@@ -69,28 +69,61 @@ export default function Home() {
 
             {/* Buttons Container */}
             <div className="relative z-10 mt-10 w-56 flex flex-col gap-4">
-                <HomeButton label="Play" onClick={() => navigate('/game')} />
-                <HomeButton label="Rank" onClick={() => navigate('/rank')} />
-                <HomeButton label="Profile" onClick={() => navigate('/profile')} />
-                <HomeButton label="Instructions" onClick={() => navigate('/instructions')} />
-                <HomeButton label="Settings" onClick={() => navigate('/settings')} />
+                <button 
+                        className="bg-black/60 text-white font-semibold py-2 rounded-lg 
+                                    transition transform duration-200
+                                    hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
+                                    active:scale-95 shadow-md
+                                "
+                        onClick={() => navigate('/game')}
+                >
+                    Play
+                </button>
+
+                <button
+                        className="bg-black/60 text-white font-semibold py-2 rounded-lg 
+                                    transition transform duration-200
+                                    hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
+                                    active:scale-95 shadow-md
+                                "
+                        onClick={() => navigate('/rank')}
+                >
+                    Rank
+                </button>
+
+                <button 
+                        className="bg-black/60 text-white font-semibold py-2 rounded-lg 
+                                    transition transform duration-200
+                                    hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
+                                    active:scale-95 shadow-md
+                                "
+                        onClick={() => navigate('/profile')}
+                >
+                    Profile
+                </button>
+
+                <button 
+                        className="bg-black/60 text-white font-semibold py-2 rounded-lg 
+                                    transition transform duration-200
+                                    hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
+                                    active:scale-95 shadow-md
+                                "
+                        onClick={() => navigate('/instructions')}
+                >
+                    Instructions
+                </button>
+
+                <button 
+                        className="bg-black/60 text-white font-semibold py-2 rounded-lg 
+                                    transition transform duration-200
+                                    hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
+                                    active:scale-95 shadow-md
+                                "
+                        onClick={() => navigate('/settings')}
+                >
+                    Settings
+                </button>
             </div>
         </div>
     );
 };
-
-function HomeButton({ label, onClick }) {
-    return (
-        <button
-            onClick={onClick}
-            className="
-                bg-black/60 text-white font-semibold py-2 rounded-lg 
-                transition transform duration-200
-                hover:bg-yellow-400/80 hover:scale-105 hover:shadow-md hover:text-black
-                active:scale-95 shadow-md
-            "
-        >
-            {label}
-        </button>
-    );
-}

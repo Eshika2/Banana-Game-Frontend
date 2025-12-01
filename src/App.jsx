@@ -9,6 +9,7 @@ import Game from './pages/Game'
 import Rank from './pages/Rank'
 import Profile from './pages/Profile'
 import Settings from './pages/Settings'
+import ForgetPassword from './pages/ForgetPassword'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Login />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/forget-password" element={<ForgetPassword />} />
           <Route path="/home" element={<Home />} />
 
           <Route path="/game" element={<Game />} />
