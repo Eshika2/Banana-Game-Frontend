@@ -1,69 +1,77 @@
-import React from 'react';
+import React from "react";
+import { useNavigate } from "react-router-dom";
 
-const Instructions = () => {
+export default function Instructions() {
+  const navigate = useNavigate();
+
   return (
     <div
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-        justifyContent: 'center',
-        height: '100vh',
-        backgroundImage:  'url(/Images/Background/banantreesunlight.jpg)', // Replace with your background image URL
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        color: 'white',
-        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.7)', // Enhance text visibility
-        padding: '20px',
-        boxSizing: 'border-box',
-      }}
+      className="min-h-screen bg-cover bg-center text-white relative flex flex-col items-center px-5"
+      style={{ backgroundImage: "url('/Images/Background/back4.jpg')" }}
     >
-      <h1 style={{ color: 'black', fontSize: '2.5rem' }}>Game instructions</h1>
-      <div
-        style={{
-          maxWidth: '600px',
-          backgroundColor: 'rgba(0, 0, 0, 0.7)', // Semi-transparent background for better readability
-          padding: '20px',
-          borderRadius: '10px',
-          boxShadow: '0px 4px 10px rgba(0, 0, 0, 0.5)',
-        }}
-      >
-        <ol style={{ lineHeight: '1.8', fontSize: '16px' }}>
-          <li>
-            Log in or create an account to get started. provide your email as your username and give appropriate password and signup, then you can login.
-          </li>
-          <li>
-            Navigate to the "Play" section to start the game. Solve the puzzles by guessing the correct number hidden behind the bananas.
-          </li>
-          <li>
-            Unlock levels by achieving the required score in each stage. Levels get progressively harder with added challenges like limited attempts and with incraesing score tresholds to unlock each level up.
-          </li>
-          <li>
-            View your high scores on the "Score" page to track your progress.
-          </li>
-          <li>
-            Customize your avatar and update your profile picture.
-          </li>
-          <li>
-            Use hints or lifelines when you’re stuck, but use them wisely as they are limited.
-          </li>
-        </ol>
-      </div>
+      <div className="absolute inset-0 bg-black/40"></div>
+
       <button
-        style={{
-          padding: '10px 20px',
-                        background: 'yellow',
-                        color: '#000',
-                        border: '1px solid #ccc',
-                        borderRadius: '5px',
-                        cursor: 'pointer',
-        }}
-        onClick={() => window.history.back()} // Navigate back to the previous page
+        onClick={() => navigate(-1)}
+        className="absolute top-5 right-5 px-4 py-2 bg-yellow-400 text-black font-bold rounded shadow hover:bg-yellow-300 z-10"
       >
         Back
       </button>
+
+      <div className="relative z-10 w-full max-w-3xl pt-20 pb-10 flex flex-col items-center">
+        <h1 className="text-yellow-300 text-4xl sm:text-5xl font-extrabold drop-shadow-lg mb-8">
+          How to Play ?
+        </h1>
+
+        <div className="bg-black/60 p-6 sm:p-8 rounded-xl shadow-xl text-lg leading-relaxed backdrop-blur-sm">
+          <ol className="list-decimal list-inside space-y-5">
+            
+            <li>
+              Start by creating an account with your email and password. Once you
+              sign up, you can log in anytime to continue your progress.
+            </li>
+
+            <li>
+              Head over to the <b>Play</b> page to begin. A banana image will
+              appear and your job is to type the correct number
+              related to the banana shown.
+            </li>
+
+            <li>
+              Every round has a countdown timer. Try to answer before it reaches
+              zero.{" "}
+              <b>
+                If the time runs out, the game automatically loads a new banana
+                and starts the next round.
+              </b>
+            </li>
+
+            <li>
+              Your score changes based on how you play:
+              <ul className="list-disc list-inside mt-3 space-y-1 ml-8">
+                <li>✅ Correct answer: <b>+20 points</b></li>
+                <li>❌ Wrong answer: <b>-5 points</b></li>
+                <li>⬆️ Level 2: <b>+100 bonus</b></li>
+                <li>⬆️ Level 3: <b>+200 bonus</b></li>
+                <li>⬆️ Higher levels: <b>+300 bonus</b></li>
+              </ul>
+            </li>
+
+            <li>
+              The <b>Leaderboard</b> shows how you rank among all players and updates instantly.
+            </li>
+
+            <li>
+              Visit <b>My Profile</b> to view your level, score, rank and stats.
+            </li>
+
+            <li>
+              Your progress is automatically saved and you can log out anytime and return without losing a thing.
+            </li>
+
+          </ol>
+        </div>
+      </div>
     </div>
   );
-};
-
-export default Instructions;
+}
