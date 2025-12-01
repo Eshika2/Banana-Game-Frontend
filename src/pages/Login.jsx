@@ -4,7 +4,7 @@ import axios from "axios";
 
 import toast from "react-hot-toast";
 
-function Login() {
+export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
 
@@ -69,57 +69,57 @@ function Login() {
 
     return (
         <div
-            className="d-flex justify-content-center align-items-center vh-100"
-            style={{
-                backgroundImage: `url('/Images/Background/back1.jpg')`,
-                backgroundSize: "cover",
-                backgroundPosition: "center",
-            }}
+            className="min-h-screen flex items-center justify-center bg-cover bg-center"
+            style={{ backgroundImage: "url('/Images/Background/back1.jpg')" }}
         >
-            <div className="bg-white p-3 rounded w-25 shadow">
-                <h2 className="text-center mb-3">Login</h2>
-
-                <div className="mb-3">
-                    <label htmlFor="email">
-                        <strong>Email</strong>
-                    </label>
-                    <input
-                        type="text"
-                        placeholder="Enter Email"
-                        autoComplete="off"
-                        name="email"
-                        className="form-control rounded-0"
-                        onChange={(e) => setEmail(e.target.value)}
-                        required
-                    />
-                </div>
-                <div className="mb-3">
-                    <label htmlFor="password">
-                        <strong>Password</strong>
-                    </label>
-                    <input
-                        type="password"
-                        placeholder="Enter Password"
-                        name="password"
-                        className="form-control rounded-0"
-                        onChange={(e) => setPassword(e.target.value)}
-                        required
-                    />
-                </div>
-                <button type="submit" className="btn btn-success w-100 rounded-0" onClick={handleSubmit}>
+            <div className="backdrop-blur-2xl bg-white/20 p-8 rounded-2xl shadow-2xl w-full max-w-md border border-white/30">
+                <h2 className="text-4xl font-bold text-black text-center mb-6">
                     Login
-                </button>
+                </h2>
 
-                <p className="mt-3 text-center">Don't have an account?</p>
-                <Link
-                    to="/signup"
-                    className="btn btn-default border w-100 bg-light rounded-0 text-decoration-none"
-                >
-                    Sign Up
-                </Link>
+                <div className="space-y-4">
+                    <div>
+                        <label className="text-white font-medium">Email</label>
+                        <input
+                            type="text"
+                            className="w-full mt-1 p-3 rounded-xl bg-white/80 focus:ring-2 focus:ring-yellow-500 outline-none"
+                            placeholder="Enter your email"
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                    </div>
+
+                    <div>
+                        <label className="text-white font-medium">Password</label>
+                        <input
+                            type="password"
+                            className="w-full mt-1 p-3 rounded-xl bg-white/80 focus:ring-2 focus:ring-yellow-500 outline-none"
+                            placeholder="Enter your password"
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                    </div>
+
+                    <button
+                        onClick={handleSubmit}
+                        className="w-full mt-3 p-3 rounded-xl bg-green-600 hover:bg-green-700 text-white py-3 font-semibold transition cursor"
+                    >
+                        Login
+                    </button>
+                </div>
+
+                <p className="text-center text-white mt-4">
+                    Don't have an account?{" "}
+                    <Link className="text-yellow-300 font-semibold hover:underline" to="/signup">
+                        Sign Up
+                    </Link>
+                </p>
+
+                <p className="text-center text-white mt-4">
+                    Forget your password?{" "}
+                    <Link className="text-yellow-300 font-semibold hover:underline" to="/forget-password">
+                        Reset Password
+                    </Link>
+                </p>
             </div>
         </div>
     );
 }
-
-export default Login;
